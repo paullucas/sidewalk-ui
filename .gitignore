@@ -1,0 +1,10 @@
+/*.log
+/target
+/*-init.clj
+out
+*~
+resources/public/js
+resources/public/vendor
+.nrepl-port
+figwheel_server.log
+~                   

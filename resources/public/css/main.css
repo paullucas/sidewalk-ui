@@ -1,0 +1,80 @@
+body {
+  font-family: "hack";
+  /* background-color: black; */
+  /* color: white; */
+}
+
+.mainHeader {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.pixelBox {
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+  border: 1px solid black;
+}
+
+.pixelContainer {
+  max-width: 930px !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.colorPreview {
+  height: 200px;
+  width: 200px;
+  float: right;
+}
+
+.randColorBtn {}
+
+.randPixelBtn {}
+
+.colorPickerContainer {
+  margin-top: 35px;
+  margin-bottom: 40px;
+}
+
+.randBtnRow {
+  margin-top: 35px;
+  margin-bottom: 40px;
+}
+
+.toolbarContainer {}
+
+.sliderContainer {
+  float: right;
+  padding-right: 0;
+}
+
+.gridSectionContainer {
+  border-left: 1px solid #eee;
+}
+
+.brushSectionIcon,
+.gridSectionIcon,
+.randPixelBtnContainer,
+.fullFillBtnContainer,
+.randColorBtnContainer {
+  text-align: center;
+}
+
+.randPixelBtn,
+.fullFillBtn,
+.randColorBtn {
+  padding-bottom: 15px;
+}
+
+.randPixelBtn:hover,
+.fullFillBtn:hover,
+.randColorBtn:hover {
+  cursor: pointer;
+}
+
+.toolbarHr {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
