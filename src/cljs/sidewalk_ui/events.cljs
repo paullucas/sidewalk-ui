@@ -15,12 +15,7 @@
 (re-frame/reg-event-db
  :set-pixel
  (fn [db [_ pixel]]
-   (assoc db :pixel-vec
-          (map (fn [p]
-                 (if (= (:key p) (:key pixel))
-                   pixel
-                   p))
-               (:pixel-vec db)))))
+   (assoc (:pixel-vec db) :key pixel)))
 
 (re-frame/reg-event-db
  :set-active-color

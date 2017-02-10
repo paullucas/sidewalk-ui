@@ -1,15 +1,17 @@
 (ns sidewalk-ui.views
-    (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :as re-frame]))
 
 (defn rand-btn []
   [:div.col-md-12.randPixelBtnContainer
    [:span.fa.fa-2x.fa-random.randPixelBtn
-    {:on-click #(re-frame/dispatch
-                 [:set-pixel-vec (for [r (range 0 806)]
-                                   {:r (rand-int 255)
-                                    :g (rand-int 255)
-                                    :b (rand-int 255)
-                                    :key r})])}]])
+    {:on-click
+     #(re-frame/dispatch
+       [:set-pixel-vec
+        (into [] (for [r (range 0 806)]
+                   {:r (rand-int 255)
+                    :g (rand-int 255)
+                    :b (rand-int 255)
+                    :key r}))])}]])
 
 (defn change-color [k]
   (let [c (re-frame/subscribe [:active-color])]
@@ -23,12 +25,14 @@
   (let [c (re-frame/subscribe [:active-color])]
     [:div.col-md-12.fullFillBtnContainer
      [:span.fa.fa-2x.fa-arrows-alt.fullFillBtn
-      {:on-click #(re-frame/dispatch
-                   [:set-pixel-vec (for [r (range 0 806)]
-                                     {:r (:r @c) 
-                                      :g (:g @c)
-                                      :b (:b @c)
-                                      :key r})])}]]))
+      {:on-click
+       #(re-frame/dispatch
+        [:set-pixel-vec
+         (into [] (for [r (range 0 806)]
+                    {:r (:r @c) 
+                     :g (:g @c)
+                     :b (:b @c)
+                     :key r}))])}]]))
 
 (defn parse-pixels [v]
   (for [p v]
@@ -55,16 +59,17 @@
              "b" (:b v))
     :on-change #(let [sv (.-value (.-target %))]
                   (re-frame/dispatch
-                   [:set-active-color (case n
-                                        "r" {:r sv
-                                             :g (:g v)
-                                             :b (:b v)}
-                                        "g" {:r (:r v)
-                                             :g sv
-                                             :b (:b v)}
-                                        "b" {:r (:r v)
-                                             :g (:g v)
-                                             :b sv})]))}])
+                   [:set-active-color
+                    (case n
+                      "r" {:r sv
+                           :g (:g v)
+                           :b (:b v)}
+                      "g" {:r (:r v)
+                           :g sv
+                           :b (:b v)}
+                      "b" {:r (:r v)
+                           :g (:g v)
+                           :b sv})]))}])
 
 (defn rand-color []
   [:div.col-md-12.randColorBtnContainer
