@@ -15,13 +15,7 @@
 (re-frame/reg-event-db
  :set-pixel
  (fn [db [_ pixel]]
-   ;; (assoc (:pixel-vec db) :key pixel)
-   ;; (js/console.log (:pixel-vec db))
-   ;; (js/console.log  (:key ((:pixel-vec db) (:key pixel))))
-   ;; (js/console.log pixel)
-   (assoc (:pixel-vec db)
-          (:key ((:pixel-vec db) (:key pixel)))
-          pixel)))
+   (assoc (:pixel-vec db) :key pixel)))
 
 (re-frame/reg-event-db
  :set-active-color
