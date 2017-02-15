@@ -106,11 +106,11 @@
     [color-picker]
     [:div.randBtnRow.col-md-2
      [:div.brushSectionContainer.col-md-6
-      [:span.col-md-12.fa.fa-3x.fa-paint-brush.brushSectionIcon]
+      [:span.fa.fa-3x.fa-eyedropper.brushSectionIcon]
       [:hr.col-md-12.toolbarHr]
       [rand-color]]
      [:div.gridSectionContainer.col-md-6
-      [:span.col-md-12.fa.fa-3x.fa-th.gridSectionIcon]
+      [:span.fa.fa-3x.fa-th.gridSectionIcon]
       [:hr.col-md-12.toolbarHr]
       [full-fill-btn]
       [rand-btn]]]])

@@ -37,8 +37,6 @@ body {
   margin-bottom: 40px;
 }
 
-.toolbarContainer {}
-
 .sliderContainer {
   float: right;
   padding-right: 0;
@@ -46,14 +44,15 @@ body {
 
 .gridSectionContainer {
   border-left: 1px solid #eee;
-  text-align: center;
 }
 
 .brushSectionIcon,
 .gridSectionIcon,
 .randPixelBtnContainer,
 .fullFillBtnContainer,
-.randColorBtnContainer {
+.randColorBtnContainer,
+.gridSectionContainer,
+.brushSectionContainer {
   text-align: center;
 }
 
