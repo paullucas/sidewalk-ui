@@ -1,7 +1,5 @@
 body {
   font-family: "hack";
-  /* background-color: black; */
-  /* color: white; */
 }
 
 .mainHeader {
@@ -29,10 +27,6 @@ body {
   float: right;
 }
 
-.randColorBtn {}
-
-.randPixelBtn {}
-
 .colorPickerContainer {
   margin-top: 35px;
   margin-bottom: 40px;
@@ -52,6 +46,7 @@ body {
 
 .gridSectionContainer {
   border-left: 1px solid #eee;
+  text-align: center;
 }
 
 .brushSectionIcon,
