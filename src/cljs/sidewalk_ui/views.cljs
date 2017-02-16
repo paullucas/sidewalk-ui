@@ -1,119 +1,139 @@
 (ns sidewalk-ui.views
   (:require [re-frame.core :as re-frame]))
 
+(defn pixel-vec
+  ([color]
+   (into [] (for [key (range 0 806)]
+              {:r (:r color)
+               :g (:g color)
+               :b (:b color)
+               :key key})))
+  ([]
+   (into [] (for [key (range 0 806)]
+              {:r (rand-int 255)
+               :g (rand-int 255)
+               :b (rand-int 255)
+               :key key}))))
+
 (defn rand-btn []
   [:div.col-md-12.randPixelBtnContainer
    [:span.fa.fa-2x.fa-random.randPixelBtn
     {:on-click
      #(re-frame/dispatch
        [:set-pixel-vec
-        (into [] (for [r (range 0 806)]
-                   {:r (rand-int 255)
-                    :g (rand-int 255)
-                    :b (rand-int 255)
-                    :key r}))])}]])
-
-(defn change-color [k]
-  (let [c (re-frame/subscribe [:active-color])]
-    (re-frame/dispatch
-     [:set-pixel {:r (:r @c)
-                  :g (:g @c)
-                  :b (:b @c)
-                  :key k}])))
+        (pixel-vec)])}]])
 
 (defn full-fill-btn []
-  (let [c (re-frame/subscribe [:active-color])]
+  (let [color (re-frame/subscribe [:active-color])]
     [:div.col-md-12.fullFillBtnContainer
      [:span.fa.fa-2x.fa-arrows-alt.fullFillBtn
       {:on-click
        #(re-frame/dispatch
         [:set-pixel-vec
-         (into [] (for [r (range 0 806)]
-                    {:r (:r @c) 
-                     :g (:g @c)
-                     :b (:b @c)
-                     :key r}))])}]]))
+         (pixel-vec @color)])}]]))
 
-(defn parse-pixels [v]
-  (for [p v]
-    ^{:key p}
-    [:div.pixelBox
-     {:on-mouse-over #(change-color (:key p))
-      :style {:backgroundColor
-              (str
-               "rgb(" (:r p) "," (:g p) "," (:b p) ")")}}]))
+(defn change-color [key]
+  (let [color (re-frame/subscribe [:active-color])]
+    (re-frame/dispatch
+     [:set-pixel {:r (:r @color)
+                  :g (:g @color)
+                  :b (:b @color)
+                  :key key}])))
+
+(defn parse-pixels [pixel-vec]
+  (let [mode (re-frame/subscribe [:cursor-mode])]
+    (doall
+     (for [pixel pixel-vec]
+       ^{:key pixel}
+       [:div.pixelBox
+        {:on-mouse-over (when (= @mode "hover") #(change-color (:key pixel)))
+         :on-mouse-down (when (= @mode "click") #(change-color (:key pixel)))
+         :style {:backgroundColor
+                 (str "rgb(" (:r pixel) "," (:g pixel) "," (:b pixel) ")")}}]))))
 
 (defn sidewalk-grid []
   (let [pixel-vec (re-frame/subscribe [:pixel-vec])]
-    [:div.pixelContainer
-     (parse-pixels @pixel-vec)]))
+    [:div.pixelContainer (parse-pixels @pixel-vec)]))
 
-(defn color-slider [n v]
+(defn color-slider [color value]
   [:input.colorSlider
    {:type "range"
     :min 0
     :max 255
-    :value (case n
-             "r" (:r v)
-             "g" (:g v)
-             "b" (:b v))
-    :on-change #(let [sv (.-value (.-target %))]
-                  (re-frame/dispatch
-                   [:set-active-color
-                    (case n
-                      "r" {:r sv
-                           :g (:g v)
-                           :b (:b v)}
-                      "g" {:r (:r v)
-                           :g sv
-                           :b (:b v)}
-                      "b" {:r (:r v)
-                           :g (:g v)
-                           :b sv})]))}])
+    :value (case color
+             "red" (:r value)
+             "green" (:g value)
+             "blue" (:b value))
+    :on-change #(let [slider-value (.-value (.-target %))]
+                  (re-frame/dispatch [:set-active-color
+                                      (case color
+                                        "red" {:r slider-value
+                                               :g (:g value)
+                                               :b (:b value)}
+                                        "green" {:r (:r value)
+                                                 :g slider-value
+                                                 :b (:b value)}
+                                        "blue" {:r (:r value)
+                                                :g (:g value)
+                                                :b slider-value})]))}])
 
 (defn rand-color []
   [:div.col-md-12.randColorBtnContainer
    [:span.fa.fa-2x.fa-refresh.randColorBtn
-    {:on-click #(re-frame/dispatch
-                 [:set-active-color
-                  {:r (rand-int 255)
-                   :g (rand-int 255)
-                   :b (rand-int 255)}])}]])
+    {:on-click #(re-frame/dispatch [:set-active-color
+                                    {:r (rand-int 255)
+                                     :g (rand-int 255)
+                                     :b (rand-int 255)}])}]])
 
-(defn color-preview [c]
+(defn hover-cursor-btn []
+  [:div.col-md-12.toggleCursorBtnsContainer
+   [:span.fa.fa-2x.fa-hand-paper-o.toggleCursorHoverBtn
+    {:on-click #(re-frame/dispatch [:set-cursor-mode "hover"])}]])
+
+(defn click-cursor-btn []
+  [:div.col-md-12.toggleCursorBtnsContainer
+   [:span.fa.fa-2x.fa-hand-pointer-o.toggleCursorClickBtn
+    {:on-click #(re-frame/dispatch [:set-cursor-mode "click"])}]])
+
+(defn color-preview [color]
   [:div.col-md-4.colorPreview
-   {:style {:backgroundColor
-            (str
-             "rgb(" (:r c) "," (:g c) "," (:b c) ")")}}])
+   {:style
+    {:backgroundColor
+     (str "rgb(" (:r color) "," (:g color) "," (:b color) ")")}}])
 
 (defn color-picker []
-  (let [c (re-frame/subscribe [:active-color])]
-    [:div.colorPickerContainer.col-md-7
-     [:div.col-md-4.sliderContainer
+  (let [color (re-frame/subscribe [:active-color])]
+    [:div.col-md-7.colorPickerContainer
+     [:div.col-md-6.sliderContainer
       [:div
-       [color-slider "r" @c]
-       [:h4 "R " (:r @c)]]
+       [color-slider "red" @color]
+       [:h4 "R " (:r @color)]]
       [:div
-       [color-slider "g" @c]
-       [:h4 "G " (:g @c)]]
+       [color-slider "green" @color]
+       [:h4 "G " (:g @color)]]
       [:div
-       [color-slider "b" @c]
-       [:h4 "B " (:b @c)]]]
-     [color-preview @c]]))
+       [color-slider "blue" @color]
+       [:h4 "B " (:b @color)]]]
+     [color-preview @color]]))
 
 (defn toolbar []
-  [:div.toolbarContainer.col-md-12
-    [color-picker]
-    [:div.randBtnRow.col-md-2
-     [:div.brushSectionContainer.col-md-6
-      [:span.fa.fa-3x.fa-eyedropper.brushSectionIcon]
-      [:hr.col-md-12.toolbarHr]
-      [rand-color]]
-     [:div.gridSectionContainer.col-md-6
-      [:span.fa.fa-3x.fa-th.gridSectionIcon]
-      [:hr.col-md-12.toolbarHr]
-      [full-fill-btn]
-      [rand-btn]]]])
+  [:div.col-md-12.row.toolbarContainer
+   [color-picker]
+   [:div.col-md-3.randBtnRow
+    [:div.col-md-4.brushSectionContainer
+     [:span.fa.fa-3x.fa-eyedropper.brushSectionIcon]
+     [:hr.col-md-12.toolbarHr]
+     [rand-color]]
+    [:div.col-md-4.gridSectionContainer
+     [:span.fa.fa-3x.fa-th.gridSectionIcon]
+     [:hr.col-md-12.toolbarHr]
+     [full-fill-btn]
+     [rand-btn]]
+    [:div.col-md-4.cursorSectionContainer
+     [:span.fa.fa-3x.fa-paint-brush.gridSectionIcon]
+     [:hr.col-md-12.toolbarHr]
+     [hover-cursor-btn]
+     [click-cursor-btn]]]])
 
 (defn main-panel []
   [:div

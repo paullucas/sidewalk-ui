@@ -21,3 +21,8 @@
  :set-active-color
  (fn [db [_ color]]
    (assoc db :active-color color)))
+
+(re-frame/reg-event-db
+ :set-cursor-mode
+ (fn [db [_ cursor-mode]]
+   (assoc db :cursor-mode cursor-mode)))

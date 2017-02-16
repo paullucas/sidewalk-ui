@@ -11,3 +11,8 @@
  :active-color
  (fn [db _]
    (:active-color db)))
+
+(re-frame/reg-sub
+ :cursor-mode
+ (fn [db _]
+   (:cursor-mode db)))
