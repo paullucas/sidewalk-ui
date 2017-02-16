@@ -8,17 +8,32 @@ body {
   margin-bottom: 40px;
 }
 
-.pixelBox {
-  display: inline-block;
-  height: 15px;
-  width: 15px;
-  border: 1px solid black;
+@media (min-width:1240px) {
+  .pixelBox {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    border: 1px solid black;
+  }
+  .pixelContainer {
+    max-width: 1240px !important;
+    margin-left: auto;
+    margin-right: auto;
+  }  
 }
 
-.pixelContainer {
-  max-width: 930px !important;
-  margin-left: auto;
-  margin-right: auto;
+@media (max-width:1239px) {
+  .pixelBox {
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    border: 1px solid black;
+  }
+  .pixelContainer {
+    max-width: 930px !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .colorPreview {
@@ -44,6 +59,7 @@ body {
 
 .gridSectionContainer {
   border-left: 1px solid #eee;
+  border-right: 1px solid #eee;
 }
 
 .brushSectionIcon,
@@ -52,19 +68,23 @@ body {
 .fullFillBtnContainer,
 .randColorBtnContainer,
 .gridSectionContainer,
-.brushSectionContainer {
+.brushSectionContainer,
+.cursorSectionContainer {
   text-align: center;
 }
 
 .randPixelBtn,
 .fullFillBtn,
-.randColorBtn {
+.randColorBtn,
+.toggleCursorHoverBtn {
   padding-bottom: 15px;
 }
 
 .randPixelBtn:hover,
 .fullFillBtn:hover,
-.randColorBtn:hover {
+.randColorBtn:hover,
+.toggleCursorHoverBtn:hover,
+.toggleCursorClickBtn:hover {
   cursor: pointer;
 }
 
