@@ -1,6 +1,12 @@
 * Sidewalk UI
 
-Start figwheel
+Start a development server with hot reloading:
 #+BEGIN_SRC bash
 lein figwheel
+#+END_SRC
+
+Create a minified production build:
+#+BEGIN_SRC bash
+lein clean
+lein cljsbuild once min
 #+END_SRC
