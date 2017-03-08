@@ -1,5 +1,55 @@
 (ns sidewalk-ui.views
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :as re-frame]
+            [cljs.core.async :refer [<! >!]]
+            [websocket-client.core :refer [async-websocket]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
+
+(defn send-socket []
+  (let [pixel-vec (re-frame/subscribe [:pixel-vec])
+        url "ws://192.168.0.98:7890"
+        aws (async-websocket url)
+        packet (new (.from js/Uint8Array
+                           (into []
+                                 (reduce (fn [vec [pix]]
+                                           (conj vec pix))
+                                         (mapv
+                                          (fn [pix]
+                                            [(:g pix)
+                                             (:r pix)
+                                             (:b pix)])
+                                          @pixel-vec)))))
+        ;; packet (into []
+        ;;              (reduce (fn [vec [pix]]
+        ;;                        (conj vec pix))
+        ;;                      (mapv
+        ;;                       (fn [pix]
+        ;;                         [(:g pix)
+        ;;                          (:r pix)
+        ;;                          (:b pix)])
+        ;;                       @pixel-vec)))
+        ;; p1 (clj->js (subvec packet 0 403))
+        ;; p2 (clj->js (subvec packet 403 808))
+        ;; data1 (.stringify
+        ;;        js/JSON
+        ;;        #js {:type "device_pixels"
+        ;;             :device #js {:type "fadecandy"
+        ;;                          :serial""}
+        ;;             :pixels p1})
+        ;; data2 (.stringify
+        ;;        js/JSON
+        ;;        #js {:type "device_pixels"
+        ;;             :device #js {:type "fadecandy"
+        ;;                          :serial ""}
+        ;;             :pixels p2})
+        ]
+    (go (>! aws packet))
+    ;; (go (>! aws data1))
+    ;; (go (>! aws data1))
+    ;; (go (>! aws data2))
+    ;; (go (>! aws data2))
+    ;; ;; (go (>! aws "{ \"type\": \"list_connected_devices\" }"))
+    (go (js/console.log (.stringify js/JSON (<! aws))))
+    ))
 
 (defn pixel-vec
   ([color]
@@ -46,8 +96,12 @@
      (for [pixel pixel-vec]
        ^{:key pixel}
        [:div.pixelBox
-        {:on-mouse-over (when (= @mode "hover") #(change-color (:key pixel)))
-         :on-mouse-down (when (= @mode "click") #(change-color (:key pixel)))
+        {:on-mouse-over (when (= @mode "hover") (fn []
+                                                  (send-socket)
+                                                  (change-color (:key pixel))))
+         :on-mouse-down (when (= @mode "click") (fn []
+                                                  (send-socket)
+                                                  (change-color (:key pixel))))
          :style {:backgroundColor
                  (str "rgb(" (:r pixel) "," (:g pixel) "," (:b pixel) ")")}}]))))
 

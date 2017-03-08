@@ -2,7 +2,9 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
                  [reagent "0.6.0"]
-                 [re-frame "0.9.1"]]
+                 [re-frame "0.9.1"]
+                 [org.clojure/core.async "0.3.441"]
+                 [fentontravers/websocket-client "0.4.6"]]
 
   :plugins [[lein-cljsbuild "1.1.4"]]
 
@@ -22,8 +24,7 @@
                    [figwheel-sidecar "0.5.7"]
                    [com.cemerick/piggieback "0.2.1"]]
 
-    :plugins      [[lein-figwheel "0.5.7"]]
-    }}
+    :plugins      [[lein-figwheel "0.5.7"]]}}
 
   :cljsbuild
   {:builds
