@@ -20,6 +20,7 @@
                                  (:b pix)])
                               @pixel-vec))))]
     (go (>! aws packet))
+    (go (>! aws packet))
     (go (js/console.log (.stringify js/JSON (<! aws))))))
 
 (defn pixel-vec
@@ -67,17 +68,14 @@
      (for [pixel pixel-vec]
        ^{:key pixel}
        [:div.pixelBox
-        {:on-mouse-over (when (= @mode "hover") (fn []
-                                                  (send-socket)
-                                                  (change-color (:key pixel))))
-         :on-mouse-down (when (= @mode "click") (fn []
-                                                  (send-socket)
-                                                  (change-color (:key pixel))))
+        {:on-mouse-over (when (= @mode "hover") #(change-color (:key pixel)))
+         :on-mouse-down (when (= @mode "click") #(change-color (:key pixel)))
          :style {:backgroundColor
                  (str "rgb(" (:r pixel) "," (:g pixel) "," (:b pixel) ")")}}]))))
 
 (defn sidewalk-grid []
   (let [pixel-vec (re-frame/subscribe [:pixel-vec])]
+    (send-socket)
     [:div.pixelContainer (parse-pixels @pixel-vec)]))
 
 (defn color-slider [color value]
