@@ -8,48 +8,19 @@
   (let [pixel-vec (re-frame/subscribe [:pixel-vec])
         url "ws://192.168.0.98:7890"
         aws (async-websocket url)
-        packet (new (.from js/Uint8Array
-                           (into []
-                                 (reduce (fn [vec [pix]]
-                                           (conj vec pix))
-                                         (mapv
-                                          (fn [pix]
-                                            [(:g pix)
-                                             (:r pix)
-                                             (:b pix)])
-                                          @pixel-vec)))))
-        ;; packet (into []
-        ;;              (reduce (fn [vec [pix]]
-        ;;                        (conj vec pix))
-        ;;                      (mapv
-        ;;                       (fn [pix]
-        ;;                         [(:g pix)
-        ;;                          (:r pix)
-        ;;                          (:b pix)])
-        ;;                       @pixel-vec)))
-        ;; p1 (clj->js (subvec packet 0 403))
-        ;; p2 (clj->js (subvec packet 403 808))
-        ;; data1 (.stringify
-        ;;        js/JSON
-        ;;        #js {:type "device_pixels"
-        ;;             :device #js {:type "fadecandy"
-        ;;                          :serial""}
-        ;;             :pixels p1})
-        ;; data2 (.stringify
-        ;;        js/JSON
-        ;;        #js {:type "device_pixels"
-        ;;             :device #js {:type "fadecandy"
-        ;;                          :serial ""}
-        ;;             :pixels p2})
-        ]
+        packet (.from js/Uint8Array
+                      (into [0]
+                            (reduce
+                             (fn [vec [pix]]
+                               (conj vec pix))
+                             (mapv
+                              (fn [pix]
+                                [(:g pix)
+                                 (:r pix)
+                                 (:b pix)])
+                              @pixel-vec))))]
     (go (>! aws packet))
-    ;; (go (>! aws data1))
-    ;; (go (>! aws data1))
-    ;; (go (>! aws data2))
-    ;; (go (>! aws data2))
-    ;; ;; (go (>! aws "{ \"type\": \"list_connected_devices\" }"))
-    (go (js/console.log (.stringify js/JSON (<! aws))))
-    ))
+    (go (js/console.log (.stringify js/JSON (<! aws))))))
 
 (defn pixel-vec
   ([color]
